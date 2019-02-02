@@ -27,8 +27,39 @@ let persons = [
   }
 ]
 
+const getId = () => Math.floor(Math.random() * Math.floor(100000))
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name.trim() || !body.number.trim()) {
+    return response
+      .status(400)
+      .json({ error: 'name and phonenumber must not be empty' })
+  }
+
+  const alreadyHere = persons.filter(
+    p => p.name === body.name || p.number === body.number
+  )
+
+  if (alreadyHere.length > 0) {
+    return response
+      .status(400)
+      .json({ error: 'name and phonenumber must be unique' })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: getId()
+  }
+
+  persons = persons.concat(person)
+  response.json(person)
 })
 
 app.get('/api/persons/:id', (request, response) => {
