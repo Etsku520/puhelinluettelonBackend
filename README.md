@@ -1,3 +1,3 @@
 # puhelinluettelonBackend
 
-[Heroku sovellus](https://protected-shore-89385.herokuapp.com/api/persons)
+[Heroku sovellus](https://protected-shore-89385.herokuapp.com)
