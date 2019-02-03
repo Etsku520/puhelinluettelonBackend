@@ -66,7 +66,6 @@ let persons = [
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(people => {
-    console.log(people)
     response.json(people.map(person => person.toJSON()))
   })
 })
@@ -111,12 +110,29 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-  const text = `<p>Puhelinluettelossa on ${
-    persons.length
-  } henkilön tiedot\n</p> <p>${Date()}</p>`
+  Person.find({}).then(people => {
+    const text = `<p>Puhelinluettelossa on ${
+      people.length
+    } henkilön tiedot\n</p> <p>${Date()}</p>`
 
-  console.log(text)
-  response.send(text)
+    console.log(text)
+    response.send(text)
+  })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson.toJSON())
+    })
+    .catch(error => next(error))
 })
 
 const PORT = process.env.PORT
