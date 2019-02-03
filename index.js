@@ -70,24 +70,14 @@ app.post('/api/persons', (request, response) => {
       .json({ error: 'name and phonenumber must not be empty' })
   }
 
-  const alreadyHere = persons.filter(
-    p => p.name === body.name || p.number === body.number
-  )
-
-  if (alreadyHere.length > 0) {
-    return response
-      .status(400)
-      .json({ error: 'name and phonenumber must be unique' })
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: getId()
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson.toJSON())
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
